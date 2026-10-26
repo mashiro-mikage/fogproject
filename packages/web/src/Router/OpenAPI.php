@@ -2756,6 +2756,41 @@ class OpenAPI extends FOGBase
                 )
             ],
             '/agent/v1/enroll' => [
+                'get' => self::_op(
+                    '',
+                    'agentfeatures',
+                    _('FOG Agent protocol features'),
+                    _('Public and read-only. Over the existing HTTPS server '
+                        . 'connection, advertises the required MJ-1 feature. '
+                        . 'This does not issue a certificate or change trust.'),
+                    [
+                        '200' => [
+                            'description' => _('The server advertises MJ-1.'),
+                            'headers' => [
+                                'X-FOG-Agent-Features' => [
+                                    'description' => _('Required feature name.'),
+                                    'schema' => [
+                                        'type' => 'string',
+                                        'enum' => ['directory-join-mj1']
+                                    ]
+                                ]
+                            ],
+                            'content' => ['application/json' => ['schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'status' => ['type' => 'string', 'enum' => ['ok']],
+                                    'features' => [
+                                        'type' => 'array',
+                                        'items' => [
+                                            'type' => 'string',
+                                            'enum' => ['directory-join-mj1']
+                                        ]
+                                    ]
+                                ]
+                            ]]]
+                        ]
+                    ]
+                ) + ['security' => []],
                 'post' => self::_op(
                     '',
                     'agentenroll',
@@ -2841,6 +2876,210 @@ class OpenAPI extends FOGBase
                     ]
                 )
             ],
+            '/agent/v1/identity/check' => [
+                'post' => self::_op(
+                    '',
+                    'agentidentitycheck',
+                    _('Check the live agent identity'),
+                    _('Requires the existing fog-agent client certificate, '
+                        . 'verified by the web server and bound to its host '
+                        . 'principal. Resolves the supplied live identity '
+                        . 'without check-in, inventory, AD or certificate '
+                        . 'writes.'),
+                    [
+                        '200' => [
+                            'description' => _('The live identity matches the certificate principal.'),
+                            'content' => ['application/json' => ['schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'status' => ['type' => 'string', 'enum' => ['ok']],
+                                    'identity' => [
+                                        'type' => 'object',
+                                        'properties' => [
+                                            'status' => ['type' => 'string', 'enum' => ['matched']],
+                                            'host_id' => ['type' => 'integer'],
+                                            'principal_host_id' => ['type' => 'integer']
+                                        ]
+                                    ]
+                                ]
+                            ]]]
+                        ],
+                        '400' => [
+                            'description' => _('The identity or required MJ-1 feature declaration is invalid.'),
+                            'content' => ['application/json' => ['schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'status' => ['type' => 'string', 'enum' => ['blocked']],
+                                    'reason' => ['type' => 'string']
+                                ]
+                            ]]]
+                        ],
+                        '401' => ['description' => _('No verified client certificate, or one bound to no live host.')],
+                        '409' => [
+                            'description' => _('Identity mismatch, conflict or unresolved live identity.'),
+                            'content' => ['application/json' => ['schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'status' => ['type' => 'string', 'enum' => ['identity_blocked']],
+                                    'identity' => [
+                                        'type' => 'object',
+                                        'properties' => [
+                                            'status' => ['type' => 'string', 'enum' => ['mismatch', 'conflict', 'unresolved']],
+                                            'host_id' => ['type' => 'integer'],
+                                            'principal_host_id' => ['type' => 'integer']
+                                        ]
+                                    ]
+                                ]
+                            ]]]
+                        ]
+                    ],
+                    [],
+                    [
+                        'required' => true,
+                        'content' => ['application/json' => ['schema' => [
+                            'type' => 'object',
+                            'required' => ['identity', 'features'],
+                            'properties' => [
+                                'identity' => [
+                                    'type' => 'object',
+                                    'description' => _('The live SMBIOS and MAC identity reported by fog-agent.'),
+                                    'properties' => [
+                                        'system_uuid' => ['type' => 'string'],
+                                        'system_serial' => ['type' => 'string'],
+                                        'board_serial' => ['type' => 'string'],
+                                        'chassis_asset' => ['type' => 'string'],
+                                        'smbios_version' => ['type' => 'string'],
+                                        'macs' => ['type' => 'array', 'items' => ['type' => 'string']],
+                                        'warnings' => ['type' => 'array', 'items' => ['type' => 'string']]
+                                    ]
+                                ],
+                                'features' => [
+                                    'type' => 'array',
+                                    'items' => ['type' => 'string', 'enum' => ['directory-join-mj1']]
+                                ]
+                            ]
+                        ]]]
+                    ]
+                ) + ['security' => []]
+            ],
+            '/agent/v1/directory/rejoin/start' => [
+                'post' => self::_op(
+                    '',
+                    'agentrejoinstart',
+                    _('Start one directory rejoin attempt'),
+                    _('Requires the existing fog-agent client certificate, '
+                        . 'verified and bound to its host principal. A valid '
+                        . 'ready plan is durably claimed before its existing '
+                        . 'directory credential and rejoin plan are returned. '
+                        . 'A repeated start does not return the credential again.'),
+                    [
+                        '200' => [
+                            'description' => _('The one-shot start was claimed; includes the directory credential and public rejoin plan.'),
+                            'content' => ['application/json' => ['schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'status' => ['type' => 'string', 'enum' => ['ok']],
+                                    'directory' => [
+                                        'type' => 'object',
+                                        'properties' => [
+                                            'domain' => ['type' => 'string'],
+                                            'username' => ['type' => 'string'],
+                                            'password' => [
+                                                'type' => 'string',
+                                                'description' => _('Sensitive one-shot credential; returned only after the mTLS host has claimed the ready attempt.')
+                                            ],
+                                            'ou' => ['type' => 'string'],
+                                            'reboot' => ['type' => 'boolean'],
+                                            'rejoin' => [
+                                                'type' => 'object',
+                                                'properties' => [
+                                                    'attempt_id' => ['type' => 'string'],
+                                                    'host_id' => ['type' => 'integer'],
+                                                    'version' => ['type' => 'integer', 'enum' => [2]],
+                                                    'config_revision' => ['type' => 'string'],
+                                                    'phase' => ['type' => 'string'],
+                                                    'name' => ['type' => 'string'],
+                                                    'domain' => ['type' => 'string'],
+                                                    'operation' => ['type' => 'string', 'enum' => ['rebind', 'rename']],
+                                                    'mode' => ['type' => 'string', 'enum' => ['existing', 'create', 'rename']],
+                                                    'expected_current' => ['type' => 'string'],
+                                                    'expected_pending' => ['type' => 'string'],
+                                                    'dc' => ['type' => 'string'],
+                                                    'target' => [
+                                                        'type' => 'object',
+                                                        'nullable' => true,
+                                                        'description' => _('Existing target pin; null for rename and before a create operation is confirmed.'),
+                                                        'properties' => [
+                                                            'guid' => ['type' => 'string'],
+                                                            'sid' => ['type' => 'string'],
+                                                            'dn' => ['type' => 'string'],
+                                                            'account' => ['type' => 'string'],
+                                                            'dns' => ['type' => 'string'],
+                                                            'uac' => ['type' => 'integer'],
+                                                            'pwd_last_set' => ['type' => 'string'],
+                                                            'spns' => ['type' => 'array', 'items' => ['type' => 'string']]
+                                                        ]
+                                                    ],
+                                                    'reason' => ['type' => 'string']
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]]]
+                        ],
+                        '400' => [
+                            'description' => _('The request body is invalid.'),
+                            'content' => ['application/json' => ['schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'status' => ['type' => 'string', 'enum' => ['blocked']],
+                                    'reason' => ['type' => 'string']
+                                ]
+                            ]]]
+                        ],
+                        '401' => ['description' => _('No verified client certificate, or one bound to no live host.')],
+                        '409' => [
+                            'description' => _('The plan is no longer ready or its host, identity, configuration or directory records changed.'),
+                            'content' => ['application/json' => ['schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'status' => ['type' => 'string', 'enum' => ['blocked']],
+                                    'reason' => ['type' => 'string']
+                                ]
+                            ]]]
+                        ],
+                        '503' => [
+                            'description' => _('The directory service or required server-side provider is unavailable.'),
+                            'content' => ['application/json' => ['schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'status' => ['type' => 'string', 'enum' => ['blocked']],
+                                    'reason' => ['type' => 'string']
+                                ]
+                            ]]]
+                        ]
+                    ],
+                    [],
+                    [
+                        'required' => true,
+                        'content' => ['application/json' => ['schema' => [
+                            'type' => 'object',
+                            'required' => ['attempt_id', 'config_revision', 'target_guid'],
+                            'properties' => [
+                                'attempt_id' => ['type' => 'string'],
+                                'config_revision' => ['type' => 'string'],
+                                'target_guid' => ['type' => 'string', 'format' => 'uuid', 'nullable' => true],
+                                'operation' => [
+                                    'type' => 'string',
+                                    'enum' => ['rebind', 'rename'],
+                                    'description' => _('Omitted by legacy v1 requests; required by target-v2 and must match the operation in the current ready plan.')
+                                ]
+                            ]
+                        ]]]
+                    ]
+                ) + ['security' => []]
+            ],
             '/agent/v1/poll' => [
                 'post' => self::_op(
                     '',
@@ -2882,6 +3121,44 @@ class OpenAPI extends FOGBase
                                     'revision' => ['type' => 'string'],
                                     'poll_interval' => ['type' => 'integer'],
                                     'server_time' => ['type' => 'string'],
+                                    'directory_check' => [
+                                        'type' => 'object',
+                                        'nullable' => true,
+                                        'description' => _('Read-only context for the target-v2 directory observation. Present only when the poll declares directory-join-target-v2 and the host is eligible for observation; null when no check is requested.'),
+                                        'required' => ['name', 'domain', 'dc', 'revision'],
+                                        'properties' => [
+                                            'name' => ['type' => 'string'],
+                                            'domain' => ['type' => 'string'],
+                                            'dc' => ['type' => 'string'],
+                                            'revision' => ['type' => 'string']
+                                        ]
+                                    ],
+                                    'directory_rejoin' => [
+                                        'type' => 'object',
+                                        'nullable' => true,
+                                        'description' => _('Target-v2 operation plan; absent or null when no operation is planned.'),
+                                        'properties' => [
+                                            'version' => ['type' => 'integer', 'enum' => [2]],
+                                            'operation' => ['type' => 'string', 'enum' => ['rebind', 'rename']],
+                                            'attempt_id' => ['type' => 'string'],
+                                            'host_id' => ['type' => 'integer'],
+                                            'config_revision' => ['type' => 'string'],
+                                            'phase' => ['type' => 'string'],
+                                            'name' => ['type' => 'string'],
+                                            'domain' => ['type' => 'string'],
+                                            'mode' => ['type' => 'string', 'enum' => ['existing', 'create', 'rename']],
+                                            'expected_current' => ['type' => 'string'],
+                                            'expected_pending' => ['type' => 'string'],
+                                            'dc' => ['type' => 'string'],
+                                            'target' => [
+                                                'type' => 'object',
+                                                'nullable' => true,
+                                                'description' => _('The confirmed existing Target pin, or null before creation is confirmed.'),
+                                                'additionalProperties' => true
+                                            ],
+                                            'reason' => ['type' => 'string']
+                                        ]
+                                    ],
                                     'state' => [
                                         'type' => 'object',
                                         'description' => _('The desired state: revision, '
@@ -2935,6 +3212,35 @@ class OpenAPI extends FOGBase
                                 'agent_version' => ['type' => 'string'],
                                 'applied_revision' => ['type' => 'string'],
                                 'want_state' => ['type' => 'boolean'],
+                                'features' => [
+                                    'type' => 'array',
+                                    'description' => _('Windows MJ-1 polls declare both the base identity feature and directory target-v2 when supported.'),
+                                    'items' => ['type' => 'string', 'enum' => ['directory-join-mj1', 'directory-join-target-v2']]
+                                ],
+                                'directory_observation' => [
+                                    'type' => 'object',
+                                    'description' => _('Optional read-only Windows observation sent in response to directory_check. It carries no credentials.'),
+                                    'required' => ['revision', 'dc', 'dc_reachable', 'current_name', 'pending_name', 'domain', 'netbios', 'role', 'secure_channel', 'boot'],
+                                    'properties' => [
+                                        'revision' => ['type' => 'string'],
+                                        'dc' => ['type' => 'string'],
+                                        'dc_reachable' => ['type' => 'boolean'],
+                                        'current_name' => ['type' => 'string'],
+                                        'pending_name' => ['type' => 'string'],
+                                        'domain' => ['type' => 'string'],
+                                        'netbios' => ['type' => 'string'],
+                                        'role' => ['type' => 'string'],
+                                        'secure_channel' => ['type' => 'string', 'enum' => ['true', 'false', 'unknown']],
+                                        'boot' => [
+                                            'type' => 'object',
+                                            'required' => ['marker', 'started'],
+                                            'properties' => [
+                                                'marker' => ['type' => 'string'],
+                                                'started' => ['type' => 'string']
+                                            ]
+                                        ]
+                                    ]
+                                ],
                                 'inventory' => [
                                     'type' => 'object',
                                     'description' => _('Hardware facts, sent only when the '

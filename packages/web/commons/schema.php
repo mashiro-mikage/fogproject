@@ -11998,3 +11998,9 @@ $this->schema[] = [
     . "JOIN `groupModuleAssoc` g ON g.`gmaGroupID` = gm.`gmGroupID` "
     . "WHERE gm.`gmHostID` = h.`hostID` AND g.`gmaModuleID` = m.`id`)",
 ];
+
+// 444: target-based directory operations.
+$this->schema[] = [
+    'ALTER TABLE `hostDirectory` ADD COLUMN `hdRejoinConfig` TEXT NULL DEFAULT NULL, '
+    . 'ADD COLUMN `hdRejoinState` TEXT NULL DEFAULT NULL',
+];

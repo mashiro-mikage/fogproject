@@ -1669,6 +1669,9 @@ class Route extends FOGBase
         // fog-agent (protocol v1). The enroll route is public, listed in
         // $unauthexact above; the other two are the admin's side of it.
         self::_registerRoute($r, 'POST', '/agent/v1/enroll', [__CLASS__, 'agentEnroll'], 'agentenroll');
+        self::_registerRoute($r, 'GET', '/agent/v1/enroll', [__CLASS__, 'agentFeatures'], 'agentfeatures');
+        self::_registerRoute($r, 'POST', '/agent/v1/identity/check', [__CLASS__, 'agentIdentityCheck'], 'agentidentitycheck');
+        self::_registerRoute($r, 'POST', '/agent/v1/directory/rejoin/start', [__CLASS__, 'agentRejoinStart'], 'agentrejoinstart');
         self::_registerRoute($r, 'POST', '/agent/v1/poll', [__CLASS__, 'agentPoll'], 'agentpoll');
         self::_registerRoute($r, 'POST', '/agent/v1/renew', [__CLASS__, 'agentRenew'], 'agentrenew');
         self::_registerRoute($r, 'POST', '/agent/v1/result', [__CLASS__, 'agentResult'], 'agentresult');
@@ -3064,6 +3067,12 @@ class Route extends FOGBase
     {
         $Host = self::$agentHost;
         $body = self::_jsonBody();
+        try {
+            \FOG\Agent\DirectoryRejoin::beforePoll($Host, $body);
+        } catch (\RuntimeException $e) {
+            HTTPResponseCodes::breakHead(self::_agentErrorCode($e), json_encode(['status' => 'blocked', 'reason' => $e->getMessage()]));
+            return;
+        }
         // Canonical form on the way in: the agent stamps itself from the
         // release tag and so reports `v0.1.6`, while every version the
         // server is given is written `0.1.6`. Storing the spelling the
@@ -3139,6 +3148,17 @@ class Route extends FOGBase
         try {
             $answer += \FOG\Agent\State::facts($Host, $body);
             $answer += \FOG\Agent\State::sessions($Host, $body);
+            if (\FOG\Agent\MachineIdentity::requested($body)) {
+                try {
+                    $answer['directory_rejoin'] = \FOG\Agent\DirectoryRejoin::plan($Host);
+                } catch (\RuntimeException $rejoinError) {
+                    \FOG\Agent\DirectoryRejoin::blocked($Host, $rejoinError->getMessage());
+                    $answer['directory_rejoin'] = ['phase' => 'blocked', 'reason' => $rejoinError->getMessage()];
+                }
+                if (\FOG\Agent\DirectoryOperation::requested($body)) {
+                    $answer['directory_check'] = \FOG\Agent\DirectoryOperation::check($Host);
+                }
+            }
         } catch (\RuntimeException $e) {
             HTTPResponseCodes::breakHead(
                 self::_agentErrorCode($e),
@@ -3153,6 +3173,32 @@ class Route extends FOGBase
      *
      * @return void
      */
+    public static function agentFeatures()
+    {
+        header('X-FOG-Agent-Features: directory-join-mj1, directory-join-target-v2');
+        HTTPResponseCodes::breakHead(200, json_encode(['status' => 'ok', 'features' => ['directory-join-mj1']]));
+    }
+
+    public static function agentIdentityCheck()
+    {
+        try {
+            $answer = \FOG\Agent\MachineIdentity::check(self::$agentHost, self::_jsonBody());
+            HTTPResponseCodes::breakHead('ok' === $answer['status'] ? 200 : 409, json_encode($answer));
+        } catch (\RuntimeException $e) {
+            HTTPResponseCodes::breakHead(self::_agentErrorCode($e), json_encode(['status' => 'blocked', 'reason' => $e->getMessage()]));
+        }
+    }
+
+    public static function agentRejoinStart()
+    {
+        try {
+            $answer = \FOG\Agent\DirectoryRejoin::start(self::$agentHost, self::_jsonBody());
+            HTTPResponseCodes::breakHead(200, json_encode($answer));
+        } catch (\RuntimeException $e) {
+            HTTPResponseCodes::breakHead(self::_agentErrorCode($e), json_encode(['status' => 'blocked', 'reason' => $e->getMessage()]));
+        }
+    }
+
     public static function agentResult()
     {
         $body = self::_jsonBody();

@@ -139,6 +139,9 @@ class DirectoryPlacement extends FOGBase
      */
     public static function ensure(Host $Host, HostDirectory $Directory)
     {
+        if (!empty(DirectoryRejoin::decode($Directory->get('rejoinState'))['placement_hold'])) {
+            return;
+        }
         try {
             self::_ensure($Host, $Directory);
         } catch (\Throwable $e) {
@@ -206,6 +209,17 @@ class DirectoryPlacement extends FOGBase
 
         try {
             $dn = trim((string)$Directory->get('computerDN'));
+            $rejoin = DirectoryRejoin::decode($Directory->get('rejoinState'));
+            if ('verified' === ($rejoin['phase'] ?? '') && !empty($rejoin['target'])) {
+                // A stale clone fact may still name A. Resolve only the pinned B object.
+                $pinned = $ldap->computerRecord($connection['baseDN'], (string)$Host->get('name'));
+                if ('found' !== $pinned['status']
+                    || !DirectoryRejoin::sameObject($rejoin['target'], $pinned['record'])) {
+                    self::_record($Directory, 'rejoin_target_changed');
+                    return;
+                }
+                $dn = $pinned['record']['dn'];
+            }
             if ('' === $dn) {
                 // Normal on Linux: no join tool there exposes the DN. The
                 // directory knows, though, and asking it is better than

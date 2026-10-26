@@ -1232,6 +1232,9 @@ msgstr "Primary Storage Group"
 msgid "Allow API"
 msgstr ""
 
+msgid "Allow Computer Account Creation"
+msgstr ""
+
 #, fuzzy
 msgid "Allowed"
 msgstr "No node associated"
@@ -1543,6 +1546,9 @@ msgstr ""
 msgid "Available downloads"
 msgstr "No file was uploaded"
 
+msgid "Awaiting reboot"
+msgstr ""
+
 msgid "BIOS Date"
 msgstr "BIOS Date"
 
@@ -1592,6 +1598,9 @@ msgid "Blank starts at the domain root"
 msgstr ""
 
 msgid "Blank: each host joins with its own account"
+msgstr ""
+
+msgid "Blocked"
 msgstr ""
 
 msgid "Body accepts taskTypeID (required), taskName, shutdown, debug, deploySnapins, snapinAbortOnFailure, passreset, sessionjoin and wol. A success answers 200 with no body content, so read the queued task from the task list. Wake-on-lan is this route with wol set, not a route of its own. The caller also needs tasktype.{taskTypeID} (or tasktype.*); without it the answer is 403. The generic create and update routes for task and scheduledtask check the same permission against the row's type."
@@ -2024,6 +2033,9 @@ msgstr ""
 msgid "Check the capture folder is owned by and writable to the storage node user"
 msgstr ""
 
+msgid "Check the live agent identity"
+msgstr ""
+
 #, fuzzy
 msgid "Check the password stored for this node"
 msgstr "No FOGPage Class found for this node"
@@ -2175,7 +2187,15 @@ msgid "Computed field. Returned by the API but not a column, and not settable."
 msgstr ""
 
 #, fuzzy
+msgid "Computer GUID"
+msgstr "Printer Model"
+
+#, fuzzy
 msgid "Computer Model"
+msgstr "Printer Model"
+
+#, fuzzy
+msgid "Computer SID"
 msgstr "Printer Model"
 
 #, fuzzy
@@ -2205,8 +2225,15 @@ msgid "Confirm Download"
 msgstr "Management Password"
 
 #, fuzzy
+msgid "Confirm Retry"
+msgstr "Invalid task"
+
+#, fuzzy
 msgid "Confirm delete"
 msgstr "Invalid task"
+
+msgid "Confirm that this account is assigned to this host or its handoff is approved. Do not select an account belonging to another computer by mistake."
+msgstr ""
 
 msgid "Confirm that you would like to delete the MAC vendor listing"
 msgstr ""
@@ -2648,6 +2675,9 @@ msgstr "Current Records"
 msgid "Current Records"
 msgstr "Current Records"
 
+msgid "Current directory observation does not match this host"
+msgstr ""
+
 msgid "DMI Field"
 msgstr ""
 
@@ -2942,12 +2972,20 @@ msgid "Directory Membership"
 msgstr "Membership"
 
 #, fuzzy
+msgid "Directory rejoin status"
+msgstr "Directory"
+
+#, fuzzy
 msgid "Disable on all hosts"
 msgstr "Enabled"
 
 #, fuzzy
 msgid "Disable selected"
 msgstr "Delete Selected"
+
+#, fuzzy
+msgid "Disabled"
+msgstr "Enabled"
 
 msgid "Disabled items are not displayed. Legacy items are removed."
 msgstr ""
@@ -2999,6 +3037,10 @@ msgstr "Snapin updated"
 #, fuzzy
 msgid "Domain Create Success"
 msgstr "Install / Update Successful!"
+
+#, fuzzy
+msgid "Domain Join Status"
+msgstr "Domain name"
 
 #, fuzzy
 msgid "Domain Joining"
@@ -3361,6 +3403,9 @@ msgstr ""
 msgid "Existence check failed"
 msgstr "Private key failed"
 
+msgid "Existing target pin; null for rename and before a create operation is confirmed."
+msgstr ""
+
 msgid "Exists item must be boolean"
 msgstr ""
 
@@ -3484,6 +3529,10 @@ msgstr "No file was uploaded"
 
 msgid "FOG Agent poll"
 msgstr ""
+
+#, fuzzy
+msgid "FOG Agent protocol features"
+msgstr "has been successfully updated"
 
 #, fuzzy
 msgid "FOG Client"
@@ -4697,6 +4746,9 @@ msgstr "Server Shell"
 msgid "Identity Provider"
 msgstr ""
 
+msgid "Identity mismatch, conflict or unresolved live identity."
+msgstr ""
+
 #, php-format
 msgid "Ids for %s"
 msgstr ""
@@ -5121,6 +5173,9 @@ msgstr "In "
 msgid "In FOG"
 msgstr "In "
 
+msgid "In progress"
+msgstr ""
+
 msgid "In use as"
 msgstr ""
 
@@ -5167,6 +5222,12 @@ msgstr "Update"
 #, fuzzy
 msgid "Initrd Update Fail"
 msgstr "Printer update failed!"
+
+msgid "Inspect target candidate"
+msgstr ""
+
+msgid "Inspect the current directory candidate before confirming it."
+msgstr ""
 
 msgid "Install Plugins"
 msgstr "Install Plugins"
@@ -5520,6 +5581,12 @@ msgstr "Domain Password"
 msgid "Join Username"
 msgstr "Domain Username"
 
+msgid "Join operation verified; current status not confirmed"
+msgstr ""
+
+msgid "Joined and secure channel healthy"
+msgstr ""
+
 msgid "Kbps"
 msgstr ""
 
@@ -5734,6 +5801,9 @@ msgid "Last Deployed"
 msgstr "Last Deployed"
 
 msgid "Last Ping"
+msgstr ""
+
+msgid "Last Result (UTC)"
 msgstr ""
 
 #, fuzzy
@@ -6557,10 +6627,17 @@ msgstr ""
 msgid "Names to resolve. Each is created if no object already has it."
 msgstr ""
 
+#, fuzzy
+msgid "Native Status"
+msgstr "Status"
+
 msgid "Need the table name to drop"
 msgstr ""
 
 msgid "Needs a 256-bit key!"
+msgstr ""
+
+msgid "Needs operator review"
 msgstr ""
 
 #, fuzzy
@@ -6825,6 +6902,9 @@ msgstr "No master nodes are enabled to delete this image"
 msgid "No master nodes available"
 msgstr "No hash available"
 
+msgid "No matching computer account was found."
+msgstr ""
+
 msgid "No need to sync"
 msgstr ""
 
@@ -6902,6 +6982,10 @@ msgstr "Snapin updated"
 #, fuzzy
 msgid "No snapins associated with this group as master"
 msgstr "There are no snapins associated with this host"
+
+#, fuzzy
+msgid "No status reported"
+msgstr "Inventory"
 
 #, fuzzy
 msgid "No storage node can serve the file."
@@ -7214,6 +7298,9 @@ msgstr " | This is not the primary group"
 msgid "Old key must be a string"
 msgstr "Event must be a string"
 
+msgid "Omitted by legacy v1 requests; required by target-v2 and must match the operation in the current ready plan."
+msgstr ""
+
 msgid "Omitted from list responses; returned only on a single GET by id."
 msgstr ""
 
@@ -7337,6 +7424,9 @@ msgstr ""
 #, fuzzy, php-format
 msgid "Operations on %s."
 msgstr "Operation Field not set: %s"
+
+msgid "Optional read-only Windows observation sent in response to directory_check. It carries no credentials."
+msgstr ""
 
 msgid "Optional. A feed URL, folder or share passed to the package manager as --source. Leave empty for the manager's own configured sources."
 msgstr ""
@@ -8110,6 +8200,9 @@ msgstr "Printer updated!"
 msgid "Providers"
 msgstr ""
 
+msgid "Public and read-only. Over the existing HTTPS server connection, advertises the required MJ-1 feature. This does not issue a certificate or change trust."
+msgstr ""
+
 msgid "Publisher"
 msgstr ""
 
@@ -8189,6 +8282,12 @@ msgstr ""
 msgid "Read one saved filter"
 msgstr "Delete Selected"
 
+msgid "Read-only context for the target-v2 directory observation. Present only when the poll declares directory-join-target-v2 and the host is eligible for observation; null when no check is requested."
+msgstr ""
+
+msgid "Ready"
+msgstr ""
+
 #, fuzzy
 msgid "Real Time"
 msgstr "Host Update Failed"
@@ -8259,6 +8358,13 @@ msgstr "Registered"
 
 msgid "Registered Hosts"
 msgstr "Registered Hosts"
+
+msgid "Rejoin Phase"
+msgstr ""
+
+#, fuzzy
+msgid "Rejoin Status"
+msgstr "Status"
 
 #, php-format
 msgid "Reloaded %d setting(s) into cache"
@@ -8409,7 +8515,16 @@ msgstr "User update failed"
 msgid "Required database field is empty"
 msgstr "Required database field is empty"
 
+msgid "Required feature name."
+msgstr ""
+
 msgid "Required, and unique for this account &mdash; it is the only thing that tells one token from another when it comes time to revoke one."
+msgstr ""
+
+msgid "Requires the existing fog-agent client certificate, verified and bound to its host principal. A valid ready plan is durably claimed before its existing directory credential and rejoin plan are returned. A repeated start does not return the credential again."
+msgstr ""
+
+msgid "Requires the existing fog-agent client certificate, verified by the web server and bound to its host principal. Resolves the supplied live identity without check-in, inventory, AD or certificate writes."
 msgstr ""
 
 msgid "Reset Encryption Data"
@@ -8864,6 +8979,12 @@ msgstr "There are no images on this server."
 msgid "Secure Boot: signing FOS with your own key"
 msgstr "There are no images on this server."
 
+msgid "Secure channel is broken"
+msgstr ""
+
+msgid "Secure channel status unknown"
+msgstr ""
+
 #, fuzzy
 msgid "See all results"
 msgstr "List All %s"
@@ -8887,6 +9008,9 @@ msgid "Selected tasks canceled!"
 msgstr "has been successfully updated"
 
 msgid "Self-signed"
+msgstr ""
+
+msgid "Sensitive one-shot credential; returned only after the mTLS host has claimed the ready attempt."
 msgstr ""
 
 msgid "Sent as an Authorization: Bearer header, on its own &mdash; no fog-api-token header is needed alongside it. Each token acts with this user's roles."
@@ -9575,6 +9699,9 @@ msgstr "Download Failed"
 msgid "Start Time"
 msgstr "Start Time"
 
+msgid "Start one directory rejoin attempt"
+msgstr ""
+
 #, fuzzy
 msgid "Started"
 msgstr "Start"
@@ -10023,6 +10150,16 @@ msgstr "Task Name"
 msgid "Takes a list of names and returns an id for each: the existing object where the name is already taken, a newly created one otherwise. That pattern is often called an upsert -- update or insert -- and because the object may not exist yet it matches on the name rather than on an id. Safe to send repeatedly: the same names give the same ids back and no duplicates are made. Group only; every other class answers 400."
 msgstr ""
 
+msgid "Target computer account"
+msgstr ""
+
+#, fuzzy
+msgid "Target lookup is unavailable."
+msgstr "No hash available"
+
+msgid "Target-v2 operation plan; absent or null when no operation is planned."
+msgstr ""
+
 msgid "Task"
 msgstr "Task"
 
@@ -10433,6 +10570,9 @@ msgstr "No file was uploaded"
 msgid "The configured LDAPS CA path cannot be read by the web server, so it is being ignored and the system trust store used instead; verification against a private CA will fail until the path is readable"
 msgstr ""
 
+msgid "The confirmed existing Target pin, or null before creation is confirmed."
+msgstr ""
+
 #, fuzzy
 msgid "The count."
 msgstr "CPU Count"
@@ -10451,6 +10591,9 @@ msgid "The default printer for hosts in this group. A host that has its own defa
 msgstr ""
 
 msgid "The desired state: revision, capabilities, and one block per capability listed. Absent when the agent is current."
+msgstr ""
+
+msgid "The directory service or required server-side provider is unavailable."
 msgstr ""
 
 #, fuzzy
@@ -10494,6 +10637,9 @@ msgid "The id as \"row_<id>\", for DataTables."
 msgstr ""
 
 msgid "The id the package manager knows, e.g. googlechrome."
+msgstr ""
+
+msgid "The identity or required MJ-1 feature declaration is invalid."
 msgstr ""
 
 #, fuzzy
@@ -10563,6 +10709,12 @@ msgstr ""
 msgid "The leaf followed by the agent CA, PEM."
 msgstr ""
 
+msgid "The live SMBIOS and MAC identity reported by fog-agent."
+msgstr ""
+
+msgid "The live identity matches the certificate principal."
+msgstr ""
+
 msgid "The logical sector size of the disk this image was captured from."
 msgstr ""
 
@@ -10592,6 +10744,9 @@ msgstr ""
 msgid "The older spelling of /unisearch?q=. An optional trailing integer caps results PER CLASS, not overall, and this route is not paged -- there is no nextUrl to follow. Also reachable as /search."
 msgstr ""
 
+msgid "The one-shot start was claimed; includes the directory credential and public rejoin plan."
+msgstr ""
+
 msgid "The order software is applied in when the agent reconciles this host."
 msgstr ""
 
@@ -10605,6 +10760,9 @@ msgid "The path requested is already in use by another image!"
 msgstr ""
 
 msgid "The payload bytes."
+msgstr ""
+
+msgid "The plan is no longer ready or its host, identity, configuration or directory records changed."
 msgstr ""
 
 #, fuzzy
@@ -10669,6 +10827,10 @@ msgstr "Create New %s"
 msgid "The reported software list is larger than the server accepts."
 msgstr ""
 
+#, fuzzy
+msgid "The request body is invalid."
+msgstr "Task type is not valid"
+
 msgid "The request body is not a JSON object, or a required field is missing or empty. The message names the field."
 msgstr ""
 
@@ -10706,6 +10868,9 @@ msgstr "Printer update failed!"
 #, fuzzy
 msgid "The selected site no longer exists"
 msgstr " no longer exists"
+
+msgid "The server advertises MJ-1."
+msgstr ""
 
 msgid "The server holds no hardware inventory hash for this host and wants the block on the next poll."
 msgstr ""
@@ -11844,6 +12009,9 @@ msgstr "Value"
 msgid "Variable contains"
 msgstr ""
 
+msgid "Verified"
+msgstr ""
+
 msgid "Version"
 msgstr "Version"
 
@@ -12045,6 +12213,9 @@ msgstr "User Management"
 #, fuzzy
 msgid "Windows Keys"
 msgstr "Windows 8"
+
+msgid "Windows MJ-1 polls declare both the base identity feature and directory target-v2 when supported."
+msgstr ""
 
 #, fuzzy
 msgid "Windows Product key"
